@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS alko (
 # Używamy Bot zamiast Client
 intents = discord.Intents.default()
 intents.message_content = True
-GUILD_ID="1407035107189063844"
+intents.members = True
+GUILD_ID=1407035107189063844
 client = commands.Bot(command_prefix="!", intents=intents)
 
 def add_drink(user: str, etanol: float):
@@ -28,18 +29,69 @@ def add_drink(user: str, etanol: float):
 async def on_ready():
     print(f'Logged on as {client.user}!')
     try:
-        synced = await client.tree.sync()  # synchronizuje globalne komendy
+        guild = discord.Object(id=GUILD_ID)
+        synced = await client.tree.sync(guild=guild)
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(f"Sync error: {e}")
+@client.event
+async def on_reaction_add(reaction, user):
+    if user.bot:
+        return
+    guild = reaction.message.guild
+    if not guild:
+        return
+    if hasattr(client, "pijok_rola_message_id") and reaction.message.id != client.pijok_rola_message_id:
+        return
 
+    if str(reaction.emoji) == "🍻":
+        role_name = "🍻"  # upewnij się, że rola istnieje
+        member = guild.get_member(user.id)  # <- ważne
+        role = discord.utils.get(guild.roles, name=role_name)
+        if role and member:
+            await user.add_roles(role)
+            print(f"✅ Assigned {role_name} to {user}")
+
+
+@client.event
+async def on_reaction_remove(reaction, user):
+    if user.bot:
+        return
+    guild = reaction.message.guild
+    if not guild:
+        return
+    if hasattr(client, "pijok_rola_message_id") and reaction.message.id != client.pijok_rola_message_id:
+        return
+
+    if str(reaction.emoji) == "🍻":
+        role_name = "🍻"
+        role = discord.utils.get(guild.roles, name=role_name)
+        member = guild.get_member(user.id)
+        if role and member:
+            await user.remove_roles(role)
+            print(f"❌ Removed {role_name} from {user}")
+#Rola pijoka
+@client.tree.command(name="pijokrola", description="Pobierz role pijoka", guild=discord.Object(id=GUILD_ID))
+async def pijok_rola(interaction: discord.Interaction):
+    if not interaction.user.guild_permissions.administrator:
+        await interaction.response.send_message("You must be admin to use this command", ephemeral=True)
+        return
+    await interaction.response.defer(ephemeral=True)
+    description = (
+        "Zareaguj aby dołączyć do pijoków\n"
+    )
+    embed = discord.Embed(title="Rola pijoka🍻", description=description, color=discord.Color.blurple())
+    message= await interaction.channel.send(embed=embed)
+    await message.add_reaction("🍻")
+    client.pijok_rola_message_id = message.id
+    await interaction.followup.send("Pijok rola created!", ephemeral=True)
 # Slash command (aplikacyjne)
-@client.tree.command(name="gralko", description="Gienio dodaje twoją porcję alkoholu", guild=GUILD_ID)
+@client.tree.command(name="gralko", description="Gienio dodaje twoją porcję alkoholu", guild=discord.Object(id=GUILD_ID))
 async def gralkoo(interaction: discord.Interaction, ile: int, woltarz: int):
     etanol=ile*(woltarz/100)
     await interaction.response.send_message(f"wypiłxś {etanol} etanolu")
     add_drink(interaction.user.name, etanol)
-@client.tree.command(name="pijoki", description="Gienio robi ranking pijoków", guild=GUILD_ID)
+@client.tree.command(name="pijoki", description="Gienio robi ranking pijoków", guild=discord.Object(id=GUILD_ID))
 async def pijoki(interaction: discord.Interaction):
     cursor.execute("SELECT nick, procenty FROM alko ORDER BY procenty DESC LIMIT 4;")
     rows = cursor.fetchall()
