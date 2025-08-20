@@ -1,4 +1,5 @@
 import discord
+import os
 import datetime
 import sqlite3
 from discord.ext import commands
@@ -18,6 +19,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 GUILD_ID=1407035107189063844
+TOKEN=os.getenv(DISCORD_TOKEN)
 client = commands.Bot(command_prefix="!", intents=intents)
 keep_alive()
 def add_drink(user: str, etanol: float):
@@ -110,4 +112,4 @@ async def pijoki(interaction: discord.Interaction):
 
 
 # Uruchomienie
-client.run("MTQwNzAzODAwNDg4Njc2NTYzOQ.G1vG4y.U4Xvy3GLTfDbEAvq_D6tro3m1yV3eSYhib5pMc")
+client.run(TOKEN)
