@@ -124,8 +124,7 @@ async def cleardb(interaction: discord.Interaction):
 async def help(interaction: discord.Interaction):
     embed = discord.Embed(title="Ranking alkoholowy",
                           description="Komendy i ich działanie:",
-                          colour=0xff8040,
-                          timestamp=datetime.now())
+                          colour=0xff8040)
 
     embed.add_field(name="**/grajko <ile alkoholu w ml> <moc alkoholu w procentach>**",
                     value="Dodaje ilość wypitego alkoholu użytkownikowi",
