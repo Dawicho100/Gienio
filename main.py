@@ -1,6 +1,9 @@
 import discord
+import datetime
 import sqlite3
 from discord.ext import commands
+from discord.ext import tasks
+from keep_alive import keep_alive
 
 conn = sqlite3.connect("mydatabase.db")
 cursor = conn.cursor()
@@ -16,7 +19,7 @@ intents.message_content = True
 intents.members = True
 GUILD_ID=1407035107189063844
 client = commands.Bot(command_prefix="!", intents=intents)
-
+keep_alive()
 def add_drink(user: str, etanol: float):
     cursor.execute("""
     INSERT INTO alko (nick, procenty) 
