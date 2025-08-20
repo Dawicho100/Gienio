@@ -20,7 +20,6 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 GUILD_ID=1407035107189063844
-#TOKEN=os.getenv("DISCORD_TOKEN")
 client = commands.Bot(command_prefix="!", intents=intents)
 def add_drink(user: str, etanol: float):
     cursor.execute("""
@@ -116,6 +115,7 @@ async def cleardb(interaction: discord.Interaction):
         return
     cursor.execute("DELETE FROM alko;")#czyszczenie tabeli tylko dla admina
     conn.commit()
+    await interaction.response.send_message(f"wyczyszczona")
 app = Flask(__name__)
 
 @app.route("/")
