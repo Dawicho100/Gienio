@@ -114,7 +114,7 @@ async def cleardb(interaction: discord.Interaction):
     if not interaction.user.guild_permissions.administrator:
         await interaction.response.send_message("You must be admin to use this command", ephemeral=True)
         return
-    cursor.execute("DELETE * FROM alko;")
+    cursor.execute("DELETE * FROM alko;")#czyszczenie tabeli tylko dla admina
 
 app = Flask(__name__)
 
