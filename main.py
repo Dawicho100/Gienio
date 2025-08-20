@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS alko (
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
-GUILD_ID=1371169533754081320
+GUILD_ID=1407035107189063844
 client = commands.Bot(command_prefix="!", intents=intents)
 def add_drink(user: str, etanol: float):
     cursor.execute("""
