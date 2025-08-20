@@ -109,6 +109,12 @@ async def pijoki(interaction: discord.Interaction):
                          for i, (nick, procenty) in enumerate(rows)])
 
     await interaction.response.send_message(f"🍻 **Ranking pijoków**:\n{ranking}")
+@client.tree.command(name="cleardb", description="reset tabeli", guild=discord.Object(id=GUILD_ID))
+async def cleardb(interaction: discord.Interaction):
+    if not interaction.user.guild_permissions.administrator:
+        await interaction.response.send_message("You must be admin to use this command", ephemeral=True)
+        return
+    cursor.execute("DELETE * FROM alko;")
 
 app = Flask(__name__)
 
