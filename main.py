@@ -120,6 +120,22 @@ async def cleardb(interaction: discord.Interaction):
     cursor.execute("DELETE FROM alko;")#czyszczenie tabeli tylko dla admina
     conn.commit()
     await interaction.response.send_message("wyczyszczona")
+@client.tree.command(name="help", description="spis komend", guild=discord.Object(id=GUILD_ID))
+async def help(interaction: discord.Interaction):
+    embed = discord.Embed(title="Ranking alkoholowy",
+                          description="Komendy i ich działanie:",
+                          colour=0xff8040,
+                          timestamp=datetime.now())
+
+    embed.add_field(name="**/grajko <ile alkoholu w ml> <moc alkoholu w procentach>**",
+                    value="Dodaje ilość wypitego alkoholu użytkownikowi",
+                    inline=False)
+    embed.add_field(name="**/pijoki**",
+                    value="Wyświetla top 4 osoby które wypiły najwięcej alkoholu",
+                    inline=False)
+
+    await interaction.channel.send(embed=embed)
+
 app = Flask(__name__)
 
 @app.route("/")
