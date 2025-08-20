@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS alko (
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
-GUILD_ID=1407035107189063844
+GUILD_ID=1371169533754081320
 client = commands.Bot(command_prefix="!", intents=intents)
 def add_drink(user: str, etanol: float):
     cursor.execute("""
@@ -115,7 +115,7 @@ async def cleardb(interaction: discord.Interaction):
         return
     cursor.execute("DELETE FROM alko;")#czyszczenie tabeli tylko dla admina
     conn.commit()
-    await interaction.response.send_message(f"wyczyszczona")
+    await interaction.response.send_message("wyczyszczona")
 app = Flask(__name__)
 
 @app.route("/")
