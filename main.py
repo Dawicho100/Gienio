@@ -4,7 +4,8 @@ import datetime
 import sqlite3
 from discord.ext import commands
 from discord.ext import tasks
-#from keep_alive import keep_alive
+from flask import Flask
+import threading
 
 conn = sqlite3.connect("mydatabase.db")
 cursor = conn.cursor()
@@ -21,7 +22,6 @@ intents.members = True
 GUILD_ID=1407035107189063844
 #TOKEN=os.getenv("DISCORD_TOKEN")
 client = commands.Bot(command_prefix="!", intents=intents)
-#keep_alive()
 def add_drink(user: str, etanol: float):
     cursor.execute("""
     INSERT INTO alko (nick, procenty) 
@@ -110,6 +110,17 @@ async def pijoki(interaction: discord.Interaction):
 
     await interaction.response.send_message(f"🍻 **Ranking pijoków**:\n{ranking}")
 
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Bot działa ✅"
+
+def run_flask():
+    app.run(host="0.0.0.0", port=8080)
+
+# uruchamiamy Flask w osobnym wątku
+threading.Thread(target=run_flask).start()
 
 # Uruchomienie
 client.run('MTQwNzAzODAwNDg4Njc2NTYzOQ.G1vG4y.U4Xvy3GLTfDbEAvq_D6tro3m1yV3eSYhib5pMc')
