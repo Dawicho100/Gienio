@@ -149,6 +149,6 @@ if __name__ == "__main__":
     threading.Thread(target=lambda: client.run(os.environ["DISCORD_TOKEN"])).start()
 
     # 🚀 Flask w głównym procesie (Render tego wymaga)
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+   # port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=8080)
 
