@@ -145,7 +145,8 @@ def home():
     return "Bot działa ✅"
 
 def run_flask():
-    app.run(host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
 
 # uruchamiamy Flask w osobnym wątku
 threading.Thread(target=run_flask).start()
