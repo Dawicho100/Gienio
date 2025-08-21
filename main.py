@@ -149,7 +149,9 @@ def run_flask():
     app.run(host="0.0.0.0", port=port)
 
 # uruchamiamy Flask w osobnym wątku
-threading.Thread(target=run_flask).start()
+if __name__ == "__main__":
+    # 🚀 Flask w osobnym wątku (żeby Render nie ubił instancji)
+    threading.Thread(target=run_flask).start()
 
 # Uruchomienie
-client.run('MTQwNzAzODAwNDg4Njc2NTYzOQ.G1vG4y.U4Xvy3GLTfDbEAvq_D6tro3m1yV3eSYhib5pMc')
+client.run('')
