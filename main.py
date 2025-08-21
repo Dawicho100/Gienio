@@ -144,14 +144,11 @@ app = Flask(__name__)
 def home():
     return "Bot działa ✅"
 
-def run_flask():
+if __name__ == "__main__":
+    # 🚀 odpalamy bota w tle
+    threading.Thread(target=lambda: client.run(os.environ["DISCORD_TOKEN"])).start()
+
+    # 🚀 Flask w głównym procesie (Render tego wymaga)
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
 
-# uruchamiamy Flask w osobnym wątku
-if __name__ == "__main__":
-    # 🚀 Flask w osobnym wątku (żeby Render nie ubił instancji)
-    threading.Thread(target=run_flask).start()
-
-# Uruchomienie
-client.run('MTQwNzAzODAwNDg4Njc2NTYzOQ.G1vG4y.U4Xvy3GLTfDbEAvq_D6tro3m1yV3eSYhib5pMc')
