@@ -154,4 +154,4 @@ if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
 
 # Uruchomienie
-client.run('')
+client.run('MTQwNzAzODAwNDg4Njc2NTYzOQ.G1vG4y.U4Xvy3GLTfDbEAvq_D6tro3m1yV3eSYhib5pMc')
