@@ -23,7 +23,7 @@ intents.message_content = True
 intents.members = True
 
 
-GUILD_ID=1407035107189063844
+GUILD_ID=os.environ.get("SERVER_ID")
 
 
 client = commands.Bot(command_prefix="!", intents=intents)
