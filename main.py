@@ -1,18 +1,20 @@
 import discord
 import os
 import datetime
+import psycopg2
 import sqlite3
 from discord.ext import commands
 from discord.ext import tasks
 from flask import Flask
 import threading
 
-conn = sqlite3.connect("mydatabase.db")
+DATABASE_URL = os.environ.get("DATABASE_URL")  # Render -> Environment
+conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS alko (
     nick VARCHAR(50) PRIMARY KEY,
-    procenty INT
+    procenty REAL
 )
 """)
 # Używamy Bot zamiast Client
@@ -27,9 +29,10 @@ GUILD_ID=1407035107189063844
 client = commands.Bot(command_prefix="!", intents=intents)
 def add_drink(user: str, etanol: float):
     cursor.execute("""
-    INSERT INTO alko (nick, procenty) 
-    VALUES (?, ?)
-    ON CONFLICT(nick) DO UPDATE SET procenty = procenty + excluded.procenty
+    INSERT INTO alko (nick, procenty)
+    VALUES (%s, %s)
+    ON CONFLICT (nick)
+    DO UPDATE SET procenty = alko.procenty + EXCLUDED.procenty
     """, (user, etanol))
     conn.commit()
 
