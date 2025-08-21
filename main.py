@@ -137,18 +137,15 @@ async def help(interaction: discord.Interaction):
                     inline=False)
 
     await interaction.channel.send(embed=embed)
-
 app = Flask(__name__)
 
 @app.route("/")
 def home():
     return "Bot działa ✅"
-
 if __name__ == "__main__":
-    # 🚀 odpalamy bota w tle
+    # Bot w tle
     threading.Thread(target=lambda: client.run(os.environ["DISCORD_TOKEN"])).start()
 
-    # 🚀 Flask w głównym procesie (Render tego wymaga)
-   # port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=8080)
-
+    # Flask w main → Render go wykryje
+    port = int(os.environ.get("PORT", 8080))   # UWAGA: musi być dokładnie PORT z Render
+    app.run(host="0.0.0.0", port=port, debug=False)
