@@ -8,7 +8,7 @@ from discord.ext import tasks
 from flask import Flask
 import threading
 
-DATABASE_URL = os.environ.get("DATABASE_URL")  # Render -> Environment
+DATABASE_URL = os.environ("DATABASE_URL")  # Render -> Environment
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cursor = conn.cursor()
 cursor.execute("""
