@@ -49,7 +49,7 @@ async def on_ready():
 async def on_message(message):
     if message.author.bot:  # ignorujemy boty
         return
-    if message.content.startswith('@grunio'):
+    if message.content.startswith('@Gienio#6365'):
         await message.channel.send(f'Elo {message.author.mention}')
     # pozwala na działanie komend prefiksowych (!)
     await client.process_commands(message)
