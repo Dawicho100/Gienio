@@ -145,7 +145,7 @@ async def help(interaction: discord.Interaction):
                     inline=False)
 
     await interaction.response.send_message(embed=embed)
-    app = Flask(__name__)
+app = Flask(__name__)
 
 @app.route("/")
 def home():
