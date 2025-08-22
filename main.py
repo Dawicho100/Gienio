@@ -46,6 +46,14 @@ async def on_ready():
     except Exception as e:
         print(f"Sync error: {e}")
 @client.event
+async def on_message(message):
+    if message.author.bot:  # ignorujemy boty
+        return
+    if message.content.startswith('@grunio'):
+        await message.channel.send(f'Elo {message.author.mention}')
+    # pozwala na działanie komend prefiksowych (!)
+    await client.process_commands(message)
+@client.event
 async def on_reaction_add(reaction, user):
     if user.bot:
         return
@@ -136,8 +144,8 @@ async def help(interaction: discord.Interaction):
                     value="Wyświetla top 4 osoby które wypiły najwięcej alkoholu",
                     inline=False)
 
-    await interaction.channel.send(embed=embed)
-app = Flask(__name__)
+    await interaction.response.send_message(embed=embed)
+    app = Flask(__name__)
 
 @app.route("/")
 def home():
