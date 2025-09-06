@@ -115,7 +115,7 @@ async def pijok_rola(interaction: discord.Interaction):
 @client.tree.command(name="gralko", description="Gienio dodaje twoją porcję alkoholu", guild=discord.Object(id=GUILD_ID))
 async def gralkoo(interaction: discord.Interaction, ile: int, woltarz: int):
     etanol=ile*(woltarz/100)
-    await interaction.response.send_message(f"wypiłxś {etanol} etanolu")
+    await interaction.response.send_message(f"wypiłxś {etanol} etanolu użytkowniku {interaction.user.name}")
     add_drink(interaction.user.name, etanol)
 @client.tree.command(name="pijoki", description="Gienio robi ranking pijoków", guild=discord.Object(id=GUILD_ID))
 async def pijoki(interaction: discord.Interaction):
