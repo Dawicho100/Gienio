@@ -38,7 +38,8 @@ def add_drink(user: str, etanol: float):
 def update_value(user: str, etanol: float):
     cursor.execute("""
         UPDATE alko
-        SET nick = %s, procenty = %s
+        SET procenty = %s
+        WHERE nick = %s
         """, (user, etanol))
     conn.commit()
 
