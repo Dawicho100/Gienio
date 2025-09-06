@@ -35,6 +35,12 @@ def add_drink(user: str, etanol: float):
     DO UPDATE SET procenty = alko.procenty + EXCLUDED.procenty
     """, (user, etanol))
     conn.commit()
+def update_value(user: str, etanol: float):
+    cursor.execute("""
+        UPDATE alko
+        SET nick = %s, procenty = %s
+        """, (user, etanol))
+    conn.commit()
 
 @client.event
 async def on_ready():
@@ -131,6 +137,14 @@ async def cleardb(interaction: discord.Interaction):
     cursor.execute("DELETE FROM alko;")#czyszczenie tabeli tylko dla admina
     conn.commit()
     await interaction.response.send_message("wyczyszczona")
+@client.tree.command(name="update", description="update'uje wartość dla użytkownika x", guild=discord.Object(id=GUILD_ID))
+async def update(interaction: discord.Interaction, kto: str, ile: int):
+    # if not interaction.user.guild_permissions.administrator:
+    #     await interaction.response.send_message("You must be admin to use this command", ephemeral=True)
+    #     return
+    await interaction.response.send_message(f"wartość zmieniona")
+    update_value(kto, ile)
+
 @client.tree.command(name="help", description="spis komend", guild=discord.Object(id=GUILD_ID))
 async def help(interaction: discord.Interaction):
     embed = discord.Embed(title="Ranking alkoholowy",
