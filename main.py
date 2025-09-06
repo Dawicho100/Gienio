@@ -36,12 +36,20 @@ def add_drink(user: str, etanol: float):
     """, (user, etanol))
     conn.commit()
 def update_value(user: str, etanol: float):
-    cursor.execute("""
-        UPDATE alko
-        SET procenty = %s
-        WHERE nick = %s
-        """, (user, etanol))
-    conn.commit()
+    try:
+        cursor.execute("""
+            UPDATE alko
+            SET procenty = %s
+            WHERE nick = %s
+            """, (etanol, user))
+        if cursor.rowcount == 0:  # jeśli nie ma takiego usera → dodajemy
+            cursor.execute("""
+                INSERT INTO alko (nick, procenty) VALUES (%s, %s)
+                """, (user, etanol))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()  # ważne, żeby odblokować transakcję
+        raise e
 
 @client.event
 async def on_ready():
