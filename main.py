@@ -143,7 +143,7 @@ async def update(interaction: discord.Interaction, kto: str, ile: int):
     if not interaction.user.guild_permissions.administrator:
         await interaction.response.send_message("You must be admin to use this command", ephemeral=True)
         return
-    await interaction.response.send_message(f"wartość zmieniona")
+    await interaction.response.send_message(f"wartość dla użytkownika {kto} zmieniona")
     update_value(kto, ile)
 
 @client.tree.command(name="help", description="spis komend", guild=discord.Object(id=GUILD_ID))
