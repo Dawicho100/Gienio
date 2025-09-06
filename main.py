@@ -40,7 +40,7 @@ def update_value(user: str, etanol: float):
         UPDATE alko
         SET procenty = %s
         WHERE nick = %s
-        """, (user, etanol))
+        """, (etanol, user))
     conn.commit()
 
 @client.event
