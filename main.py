@@ -139,7 +139,7 @@ async def cleardb(interaction: discord.Interaction):
     conn.commit()
     await interaction.response.send_message("wyczyszczona")
 @client.tree.command(name="update", description="update'uje wartość dla użytkownika x", guild=discord.Object(id=GUILD_ID))
-async def update(interaction: discord.Interaction, kto: str, ile: int):
+async def update(interaction: discord.Interaction, kto: str, ile: float):
     if not interaction.user.guild_permissions.administrator:
         await interaction.response.send_message("You must be admin to use this command", ephemeral=True)
         return
