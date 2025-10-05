@@ -1,14 +1,8 @@
-import string
-
-import discord
-import os
 import datetime
+import os
+import discord
 import psycopg2
-import sqlite3
 from discord.ext import commands
-from discord.ext import tasks
-from flask import Flask
-import threading
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
@@ -30,10 +24,11 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-GUILD_ID=os.environ.get("SERVER_ID")
-
+GUILD_ID = os.environ.get("SERVER_ID")
 
 client = commands.Bot(command_prefix="!", intents=intents)
+
+
 def add_drink(user: str, etanol: float):
     cursor.execute("""
     INSERT INTO alko (nick, procenty)
@@ -42,6 +37,8 @@ def add_drink(user: str, etanol: float):
     DO UPDATE SET procenty = alko.procenty + EXCLUDED.procenty
     """, (user, etanol))
     conn.commit()
+
+
 def update_value(user: str, etanol: float):
     cursor.execute("""
         UPDATE alko
@@ -49,6 +46,8 @@ def update_value(user: str, etanol: float):
         WHERE nick = %s
         """, (etanol, user))
     conn.commit()
+
+
 def get_path(user: str):
     cursor.execute("""
         SELECT image
@@ -58,6 +57,8 @@ def get_path(user: str):
     result = cursor.fetchone()
     conn.commit()
     return result[0]
+
+
 @client.event
 async def on_ready():
     print(f'Logged on as {client.user}!')
@@ -67,6 +68,8 @@ async def on_ready():
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(f"Sync error: {e}")
+
+
 @client.event
 async def on_message(message):
     if message.author.bot:  # ignorujemy boty
@@ -75,6 +78,8 @@ async def on_message(message):
         await message.channel.send(f'Elo {message.author.mention}')
     # pozwala na działanie komend prefiksowych (!)
     await client.process_commands(message)
+
+
 @client.event
 async def on_reaction_add(reaction, user):
     if user.bot:
@@ -111,7 +116,9 @@ async def on_reaction_remove(reaction, user):
         if role and member:
             await user.remove_roles(role)
             print(f"❌ Removed {role_name} from {user}")
-#Rola pijoka
+
+
+# Rola pijoka
 @client.tree.command(name="pijokrola", description="Pobierz role pijoka", guild=discord.Object(id=GUILD_ID))
 async def pijok_rola(interaction: discord.Interaction):
     if not interaction.user.guild_permissions.administrator:
@@ -122,16 +129,21 @@ async def pijok_rola(interaction: discord.Interaction):
         "Zareaguj aby dołączyć do pijoków\n"
     )
     embed = discord.Embed(title="Rola pijoka🍻", description=description, color=discord.Color.blurple())
-    message= await interaction.channel.send(embed=embed)
+    message = await interaction.channel.send(embed=embed)
     await message.add_reaction("🍻")
     client.pijok_rola_message_id = message.id
     await interaction.followup.send("Pijok rola created!", ephemeral=True)
+
+
 # Slash command (aplikacyjne)
-@client.tree.command(name="gralko", description="Gienio dodaje twoją porcję alkoholu", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="gralko", description="Gienio dodaje twoją porcję alkoholu",
+                     guild=discord.Object(id=GUILD_ID))
 async def gralkoo(interaction: discord.Interaction, ile: int, woltarz: int):
-    etanol=ile*(woltarz/100)
+    etanol = ile * (woltarz / 100)
     await interaction.response.send_message(f"wypiłxś {etanol} etanolu użytkowniku {interaction.user.name}")
     add_drink(interaction.user.name, etanol)
+
+
 @client.tree.command(name="pijoki", description="Gienio robi ranking pijoków", guild=discord.Object(id=GUILD_ID))
 async def pijoki(interaction: discord.Interaction):
     cursor.execute("SELECT nick, procenty FROM alko ORDER BY procenty DESC LIMIT 4;")
@@ -141,25 +153,31 @@ async def pijoki(interaction: discord.Interaction):
         await interaction.response.send_message("🚫 Jeszcze nikt nic nie wypił!")
         return
 
-    ranking = "\n".join([f"{i+1}. {nick} — {procenty:.1f} ml etanolu"
+    ranking = "\n".join([f"{i + 1}. {nick} — {procenty:.1f} ml etanolu"
                          for i, (nick, procenty) in enumerate(rows)])
 
     await interaction.response.send_message(f"🍻 **Ranking pijoków**:\n{ranking}")
+
+
 @client.tree.command(name="cleardb", description="reset tabeli", guild=discord.Object(id=GUILD_ID))
 async def cleardb(interaction: discord.Interaction):
     if not interaction.user.guild_permissions.administrator:
         await interaction.response.send_message("You must be admin to use this command", ephemeral=True)
         return
-    cursor.execute("DELETE FROM alko;")#czyszczenie tabeli tylko dla admina
+    cursor.execute("DELETE FROM alko;")  # czyszczenie tabeli tylko dla admina
     conn.commit()
     await interaction.response.send_message("wyczyszczona")
-@client.tree.command(name="update", description="update'uje wartość dla użytkownika x", guild=discord.Object(id=GUILD_ID))
+
+
+@client.tree.command(name="update", description="update'uje wartość dla użytkownika x",
+                     guild=discord.Object(id=GUILD_ID))
 async def update(interaction: discord.Interaction, kto: str, ile: float):
     if not interaction.user.guild_permissions.administrator:
         await interaction.response.send_message("You must be admin to use this command", ephemeral=True)
         return
     await interaction.response.send_message(f"wartość dla użytkownika {kto} zmieniona")
     update_value(kto, ile)
+
 
 @client.tree.command(name="help", description="spis komend", guild=discord.Object(id=GUILD_ID))
 async def help(interaction: discord.Interaction):
@@ -175,7 +193,9 @@ async def help(interaction: discord.Interaction):
                     inline=False)
 
     await interaction.response.send_message(embed=embed)
-app = Flask(__name__)
+
+
+
 @client.tree.command(name="plan", description="Gienio pokazuje plan użytkownika", guild=discord.Object(id=GUILD_ID))
 async def plan(interaction: discord.Interaction, who: str):
     # Pobierz nazwę pliku z bazy danych
@@ -199,13 +219,6 @@ async def plan(interaction: discord.Interaction, who: str):
     embed.set_image(url=f"attachment://{filename}")
 
     await interaction.response.send_message(embed=embed, file=file)
-@app.route("/")
-def home():
-    return "Bot działa ✅"
-if __name__ == "__main__":
-    # Bot w tle
-    threading.Thread(target=lambda: client.run(os.environ["DISCORD_TOKEN"])).start()
 
-    # Flask w main → Render go wykryje
-    port = int(os.environ.get("PORT", 8080))   # UWAGA: musi być dokładnie PORT z Render
-    app.run(host="0.0.0.0", port=port, debug=False)
+if __name__ == "__main__":
+    client.run(os.environ["DISCORD_TOKEN"])
