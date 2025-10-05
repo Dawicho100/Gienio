@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS alko (
 )
 """)
 cursor.execute("""
- 
+ CREATE TABLE IF NOT EXISTS plans (
+    nick VARCHAR(50) PRIMARY KEY,
+    image VARCHAR(50)
 )
 """)
 # Używamy Bot zamiast Client
