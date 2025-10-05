@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS alko (
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
-#t
+
 
 GUILD_ID=os.environ.get("SERVER_ID")
 
