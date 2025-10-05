@@ -22,7 +22,6 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-
 GUILD_ID=os.environ.get("SERVER_ID")
 
 
