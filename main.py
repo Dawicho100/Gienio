@@ -56,6 +56,8 @@ def get_path(user: str):
     """, (user,))
     result = cursor.fetchone()
     conn.commit()
+    if result is None:
+        return None
     return result[0]
 
 
