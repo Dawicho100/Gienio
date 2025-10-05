@@ -14,7 +14,7 @@ import sys  # potrzebne do restartu
 # --- KONFIGURACJA POLLINGU GIT ---
 REPO_DIR = "/home/none/gienio/Gienio"  # katalog Twojego repo
 POLL_INTERVAL = 300  # co 5 minut
-#test
+
 def git_poller():
     last_commit = None
     while True:
