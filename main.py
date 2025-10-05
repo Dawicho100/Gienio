@@ -1,3 +1,5 @@
+import string
+
 import discord
 import os
 import datetime
@@ -15,6 +17,10 @@ cursor.execute("""
 CREATE TABLE IF NOT EXISTS alko (
     nick VARCHAR(50) PRIMARY KEY,
     procenty REAL
+)
+""")
+cursor.execute("""
+ 
 )
 """)
 # Używamy Bot zamiast Client
@@ -41,7 +47,15 @@ def update_value(user: str, etanol: float):
         WHERE nick = %s
         """, (etanol, user))
     conn.commit()
-
+def get_path(user: str):
+    cursor.execute("""
+        SELECT image
+        FROM plans
+        WHERE nick = %s
+    """, (user,))
+    result = cursor.fetchone()
+    conn.commit()
+    return result[0]
 @client.event
 async def on_ready():
     print(f'Logged on as {client.user}!')
@@ -160,7 +174,29 @@ async def help(interaction: discord.Interaction):
 
     await interaction.response.send_message(embed=embed)
 app = Flask(__name__)
+@client.tree.command(name="plan", description="Gienio pokazuje plan użytkownika", guild=discord.Object(id=GUILD_ID))
+async def plan(interaction: discord.Interaction, who: str):
+    # Pobierz nazwę pliku z bazy danych
+    filename = get_path(who)
+    if not filename:
+        await interaction.response.send_message(
+            f"❌ Nie znaleziono planu dla użytkownika {who}.",
+            ephemeral=True
+        )
+        return
 
+    embed = discord.Embed(
+        title=f"📅 Plan użytkownika {who}",
+        colour=0x00b0f4,
+        timestamp=datetime.datetime.now()
+    )
+
+    file_path = f"plans/{filename}"
+
+    file = discord.File(file_path, filename=filename)
+    embed.set_image(url=f"attachment://{filename}")
+
+    await interaction.response.send_message(embed=embed, file=file)
 @app.route("/")
 def home():
     return "Bot działa ✅"
